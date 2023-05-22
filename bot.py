@@ -4,185 +4,222 @@ import telebot
 from telebot import types
 from telebot import TeleBot
 from khayyam import JalaliDatetime
-import datetime
 import qrcode
-bot = TeleBot("5337410070:AAGvUj5gYf00DWJK7Bv3wU6aSSrq707Ev8Q")
-@bot.message_handler(commands=['start'])
+
+bot = TeleBot("YOUR_BOT_TOKEN_HERE")
+
+
+# پیام خوش‌آمدگویی که در هنگام اجرای دستور /start ارسال می‌شود
+@bot.message_handler(commands=["start"])
 def send_welcome(message):
-    bot.reply_to(message, "Hello, welcome to my bot Mr/Mrs" +
-                 message.from_user.first_name +
-                 "for use my code sent to me /help")
-@bot.message_handler(commands=['game'])
+    bot.reply_to(
+        message,
+        "👋 سلام، به ربات من خوش آمدید آقای/خانم "
+        + message.from_user.first_name
+        + ". برای استفاده از کد من، /help را ارسال کنید",
+    )
+
+
+# تابع بازی برای حدس عدد
+@bot.message_handler(commands=["game"])
 def start_game(message):
     msg = bot.send_message(
-        message.chat.id, 'Guess the number!\nSend /NewGame to start \nSend / to Stop')
+        message.chat.id,
+        "🎮 حدس عدد!\nبرای شروع /NewGame را ارسال کنید و برای خروج /stop را ارسال کنید",
+    )
     bot.register_next_step_handler(msg, game)
-@bot.message_handler(commands=['age'])
+
+
+# تابع محاسبه سن بر اساس تاریخ تولد
+@bot.message_handler(commands=["age"])
 def send_age(message):
     msg = bot.send_message(
-        message.chat.id, 'Send your birthday like: 1350/5/5\nSend / to Stop')
+        message.chat.id,
+        "🎂 تاریخ تولد خود را مانند این شکل وارد کنید: 1350/5/5 یا /stop برای خروج",
+    )
     bot.register_next_step_handler(msg, age)
-@bot.message_handler(commands=['voice'])
+
+
+# تابع تبدیل جمله انگلیسی به پیام صوتی
+@bot.message_handler(commands=["voice"])
 def send_voice(message):
     msg = bot.send_message(
-        message.chat.id, 'Send an English sentence\nSend / to Stop')
+        message.chat.id, "🔊 یک جمله انگلیسی ارسال کنید یا /stop برای خروج"
+    )
     bot.register_next_step_handler(msg, voice)
-@bot.message_handler(commands=['max'])
+
+
+# تابع برای پیدا کردن بزرگترین عدد در آرایه اعداد صحیح
+@bot.message_handler(commands=["max"])
 def send_max(message):
     msg = bot.send_message(
-        message.chat.id, 'Send numbers like: 1,2,3,4,5 to for maximum\nSend / to Stop')
+        message.chat.id,
+        "🔢 اعدادی مانند: 1,2,3,4,5 ارسال کنید تا بزرگترین عدد را پیدا کنید یا /stop برای خروج",
+    )
     bot.register_next_step_handler(msg, max_arr)
-@bot.message_handler(commands=['argmax'])
+
+
+# تابع برای پیدا کردن اندیس بزرگترین عدد در آرایه اعداد صحیح
+@bot.message_handler(commands=["argmax"])
 def send_argmax(message):
     msg = bot.send_message(
-        message.chat.id, 'Send numbers like: 1,2,3,4,5 to for maximum index\nSend / to Stop')
+        message.chat.id,
+        "🔢 اعدادی مانند: 1,2,3,4,5 ارسال کنید تا اندیس بزرگترین عدد را پیدا کنید یا /stop برای خروج",
+    )
     bot.register_next_step_handler(msg, argmax)
-@bot.message_handler(commands=['qrcode'])
+
+
+# تابع تولید کد QR برای ورودی داده شده
+@bot.message_handler(commands=["qrcode"])
 def send_qrcode(message):
     msg = bot.send_message(
-        message.chat.id, 'Send something to find its QR-Code\nSend / to Stop')
+        message.chat.id, "📷 یک متنی ارسال کنید تا کد QR آن تولید شود یا /stop برای خروج"
+    )
     bot.register_next_step_handler(msg, qr_code)
 
 
-@bot.message_handler(commands=['help'])
+# پیام راهنما که لیستی از تمام دستورات موجود را نشان می‌دهد
+@bot.message_handler(commands=["help"])
 def send_help(message):
-    bot.send_message(message.chat.id,
-                     """All works that I can are :
-/start
- (To say hello with your name account)
-/game 
- (Game that you should guess my number to win)
-/age
- (If you want to undrestand how old are you from your brithday date)
-/voice
- (To pronounce your English context as voice message)
-/max
- (Find maximum in integers array)
-/argmax
- (To find max index of integer array)
-/qrcode
- (To do qrcode on your context)
-/help
-        """)
+    bot.send_message(
+        message.chat.id,
+        """این لیستی از دستوراتی است که من پشتیبانی می‌کنم:
+🚀 /start
+(به شما سلام می‌کند و با نام شما آشنا می‌شود)
+🎮 /game 
+(بازی حدس عدد)
+🎂 /age
+(محاسبه سن شما بر اساس تاریخ تولد)
+🔊 /voice
+(تبدیل یک جمله انگلیسی به پیام صوتی)
+🔢 /max
+(پیدا کردن بزرگترین عدد در یک آرایه اعداد صحیح)
+🎯 /argmax
+(پیدا کردن اندیس بزرگترین عدد در یک آرایه اعداد صحیح)
+📷 /qrcode
+(تولید کد QR برای ورودی داده شده)
+ℹ️ /help
+(نمایش این پیام راهنما)""",
+    )
 
 
+# متغیر جهانی برای ذخیره عدد تصادفی در تابع بازی
 random_number = random.randint(-20, 20)
 
 
+# پیاده‌سازی تابع بازی
 def game(message):
     markup = types.ReplyKeyboardMarkup(row_width=1)
-    btn = types.KeyboardButton('/NewGame')
+    btn = types.KeyboardButton("/NewGame")
     markup.add(btn)
-    if message.text == '/':
-        bot.send_message(message.chat.id, 'Stopped',
-                         reply_markup=types.ReplyKeyboardRemove(selective=True))
-    else:
-        try:
-            if message.text == '/NewGame':
-                global random_number
-                random_number = random.randint(0, 50)
-                bot.send_message(message.chat.id, 'New Game\nGuess the number:',
-                                 reply_markup=markup)
-                bot.register_next_step_handler_by_chat_id(
-                    message.chat.id, game)
-            elif int(message.text) < random_number:
-                msg = bot.send_message(
-                    message.chat.id, 'Go Higher', reply_markup=markup)
-                bot.register_next_step_handler(msg, game)
-            elif int(message.text) > random_number:
-                msg = bot.send_message(
-                    message.chat.id, 'Go Lower', reply_markup=markup)
-                bot.register_next_step_handler(msg, game)
-            else:
-                bot.send_message(message.chat.id, 'You Won!',
-                                 reply_markup=types.ReplyKeyboardRemove(selective=True))
-        except:
-            msg = bot.send_message(
-                message.chat.id, 'Please send a valid number or Send / to Stop', reply_markup=markup)
-            bot.register_next_step_handler(msg, game)
-
-
-def age(message):
-    if message.text == '/':
+    if message.text == "/stop":
         bot.send_message(
-            message.chat.id, 'Stopped')
+            message.chat.id,
+            "🚫 بازی متوقف شد",
+            reply_markup=types.ReplyKeyboardRemove(selective=True),
+        )
     else:
         try:
-            if len(message.text.split('/')) == 3:
-                date_difference = JalaliDatetime.now(
-                ) - JalaliDatetime(message.text.split('/')[0], message.text.split('/')[1], message.text.split('/')[2])
-                bot.send_message(message.chat.id, 'You are about ' +
-                                 str(date_difference.days // 365))
+            if message.text == "/NewGame":
+                global random_number
+                random_number = random.randint(-20, 20)
+                bot.send_message(
+                    message.chat.id, "🎮 بازی جدید شروع شد. عددی را حدس بزنید!"
+                )
+
+            elif int(message.text) == random_number:
+                bot.send_message(
+                    message.chat.id,
+                    "🎉 تبریک می‌گویم، شما برنده شدید!",
+                    reply_markup=types.ReplyKeyboardRemove(selective=True),
+                )
+            elif int(message.text) < random_number:
+                bot.send_message(message.chat.id, "⬇️ خیلی کم است، دوباره امتحان کنید")
+            elif int(message.text) > random_number:
+                bot.send_message(
+                    message.chat.id, "⬆️ خیلی زیاد است، دوباره امتحان کنید"
+                )
+
+            bot.register_next_step_handler(message, game)
+
+        except ValueError:
+            bot.send_message(message.chat.id, "❗️ لطفاً یک عدد وارد کنید")
+
+
+# پیاده‌سازی تابع محاسبه سن
+def age(message):
+    if message.text == "/":
+        bot.send_message(message.chat.id, "Stopped")
+    else:
+        try:
+            if len(message.text.split("/")) == 3:
+                date_difference = JalaliDatetime.now() - JalaliDatetime(
+                    message.text.split("/")[0],
+                    message.text.split("/")[1],
+                    message.text.split("/")[2],
+                )
+                bot.send_message(
+                    message.chat.id, "شما حدودا " + str(date_difference.days // 365)
+                )
             else:
-                msg = bot.send_message(
-                    message.chat.id, 'Please send valid input or send /')
+                msg = bot.send_message(message.chat.id, "لطفا ورودی درست وارد کنید /")
                 bot.register_next_step_handler(msg, age)
         except:
-            msg = bot.send_message(
-                message.chat.id, 'Please send valid input or send /')
+            msg = bot.send_message(message.chat.id, "لطفا ورودی درست وارد کنید /")
             bot.register_next_step_handler(msg, age)
 
 
+# پیاده‌سازی تابع تولید پیام صوتی
 def voice(message):
-    if message.text == '/':
-        bot.send_message(
-            message.chat.id, 'Stopped')
-    else:
-        try:
-            content = gTTS(text=message.text, slow=False)
-            content.save('voice.ogg')
-            content = open('voice.ogg', 'rb')
-            bot.send_voice(message.chat.id, content)
-        except:
-            msg = bot.send_message(
-                message.chat.id, 'Please send valid input or send /')
-            bot.register_next_step_handler(msg, voice)
+    try:
+        text = message.text
+        language = "en"
+        myobj = gTTS(text=text, lang=language, slow=False)
+        myobj.save("voice_message.mp3")
+
+        with open("voice_message.mp3", "rb") as voice:
+            bot.send_voice(message.chat.id, voice, caption="🔊 اینجا پیام صوتی شماست!")
+    except Exception as e:
+        bot.send_message(message.chat.id, "❗️ اوه! مشکلی پیش آمد...")
+        print(e)
 
 
+# پیاده‌سازی تابع بزرگترین عدد
 def max_arr(message):
-    if message.text == '/':
-        bot.send_message(
-            message.chat.id, 'Stopped')
-    else:
-        try:
-            numbers = list(map(int, message.text.split(',')))
-            bot.send_message(
-                message.chat.id, 'Maximum number : ' + str(max(numbers)))
-        except:
-            msg = bot.send_message(
-                message.chat.id, 'Please send valid input or send /')
-            bot.register_next_step_handler(msg, max_arr)
+    try:
+        numbers = message.text.split(",")
+        max_num = max(list(map(int, numbers)))
+        bot.send_message(message.chat.id, f"🔢 بزرگترین عدد {max_num} است")
+
+    except Exception as e:
+        bot.send_message(message.chat.id, "❗️ اوه! مشکلی پیش آمد...")
+        print(e)
 
 
+# پیاده‌سازی تابع اندیس بزرگترین عدد
 def argmax(message):
-    if message.text == '/':
-        bot.send_message(
-            message.chat.id, 'Stopped')
-    else:
-        try:
-            numbers = list(map(int, message.text.split(',')))
-            bot.send_message(message.chat.id, 'Maximum number index: ' +
-                             str(numbers.index(max(numbers))))
-        except:
-            msg = bot.send_message(
-                message.chat.id, 'Please send valid input or send /')
-            bot.register_next_step_handler(msg, argmax)
+    try:
+        numbers = message.text.split(",")
+        index_max = max(range(len(numbers)), key=lambda i: int(numbers[i]))
+        bot.send_message(message.chat.id, f"🎯 اندیس بزرگترین عدد {index_max} است")
+
+    except Exception as e:
+        bot.send_message(message.chat.id, "❗️ اوه! مشکلی پیش آمد...")
+        print(e)
 
 
+# پیاده‌سازی تابع تولید کد QR
 def qr_code(message):
-    if message.text == '/':
-        bot.send_message(
-            message.chat.id, 'Stopped')
-    else:
-        try:
-            qrcode_img = qrcode.make(message.text)
-            qrcode_img.save('QR-Code.png')
-            photo = open('QR-Code.png', 'rb')
-            bot.send_photo(message.chat.id, photo)
-        except:
-            msg = bot.send_message(
-                message.chat.id, 'Somethong went wrong!\nPlease send valid input or send /')
-            bot.register_next_step_handler(msg, qr_code)
+    try:
+        img = qrcode.make(message.text)
+        img.save("qrcode.png")
+
+        with open("qrcode.png", "rb") as photo:
+            bot.send_photo(message.chat.id, photo, caption="📷 اینجا کد QR شماست!")
+
+    except Exception as e:
+        bot.send_message(message.chat.id, "❗️ اوه! مشکلی پیش آمد...")
+        print(e)
 
 
-bot.infinity_polling()
+bot.polling()
